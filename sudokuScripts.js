@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', (e) => {
-    const board = [
+    let board = [
         [5, 3, 0, 0, 7, 0, 0, 0, 0],
         [6, 0, 0, 1, 9, 5, 0, 0, 0],
         [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -15,8 +15,31 @@ document.addEventListener('DOMContentLoaded', (e) => {
     const boardElement = document.getElementById('container'); 
     const reset = document.getElementById('reset'); 
     const mistakesPH = document.getElementById('mistakes-counter');
-    let valArray = [];   
+    const solve = document.getElementById('solve-btn');
     let mistakes = 0; 
+
+    //solver
+    const solveSudoku = (row, cell) => {
+        if(row === 9)
+            return true;
+        else if(cell === 9)
+            return solveSudoku(row + 1, 0);
+        else if(board[row][cell] !== 0)
+            return solveSudoku(row, cell + 1);
+        else{
+            for (let i = 1; i < 10; i++) {
+                board[row][cell] = i;
+                const isValid = sudokuRules(row, cell);
+                if(isValid && solveSudoku(row, cell + 1)){
+                    return true;
+                }
+
+                board[row][cell] = 0;
+            }
+        }
+
+        return false;
+    }
 
     //functions
     const createBoard = () => {
@@ -48,27 +71,17 @@ document.addEventListener('DOMContentLoaded', (e) => {
                 boardElement.appendChild(cellDiv);
             }        
        }
-    } 
-    
-    const getBoardDataArray = () => {
-        for (let i = 0; i < 9; i++) {
-            valArray[i] = [];
-            for (let j = 0; j < 9; j++) {
-                const element = boardElement.children[i * 9 + j];
-                valArray[i][j] = parseInt(element.textContent);
-            }
-        }
-    }
+    }        
 
     const updateBoardData = (row, cell, value) => {
-        valArray[row][cell] = parseInt(value);
+        board[row][cell] = parseInt(value);        
     }
 
     const sudokuRules = (row, cell) => {
         //check horizontal
         for (let j = 0; j < 9; j++) {
             if(j !== cell){
-                if(valArray[row][cell] === valArray[row][j]){
+                if(board[row][cell] === board[row][j]){
                     return false;
                 }
             }
@@ -77,7 +90,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
         //check vertical
         for (let i = 0; i < 9; i++) {
             if(i !== row){
-                if(valArray[row][cell] === valArray[i][cell]){
+                if(board[row][cell] === board[i][cell]){
                     return false;
                 }
             }
@@ -90,7 +103,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
         for (let i = startRow; i < startRow + 3; i++) {
             for (let j = startCell; j < startCell + 3; j++) {
                 if(i != row && j != cell){
-                    if(valArray[i][j] === valArray[row][cell]){
+                    if(board[i][j] === board[row][cell]){
                         return false;
                     }
                 }
@@ -103,15 +116,21 @@ document.addEventListener('DOMContentLoaded', (e) => {
     
     //call
     createBoard();
-    getBoardDataArray();
 
     //reset button
-    reset.addEventListener('click', (e) => {
-        boardElement.innerHTML = "";
-        mistakes = 0;        
-        mistakesPH.innerHTML = `Mistakes: 0`;
-        createBoard();
-        getBoardDataArray();
+    // reset.addEventListener('click', (e) => {
+    //     boardElement.textContent = "";
+    //     mistakes = 0;        
+    //     mistakesPH.textContent = `Mistakes: `;
+    //     createBoard();
+    // });
+    //next time...
+
+    //solve button
+    solve.addEventListener('click', () => {
+        solveSudoku(0, 0); 
+        boardElement.textContent = '';
+        createBoard();        
     });
     
 });
