@@ -1,22 +1,30 @@
 document.addEventListener('DOMContentLoaded', (e) => {
-    let board = [
-        [5, 3, 0, 0, 7, 0, 0, 0, 0],
-        [6, 0, 0, 1, 9, 5, 0, 0, 0],
-        [0, 9, 8, 0, 0, 0, 0, 6, 0],
-        [8, 0, 0, 0, 6, 0, 0, 0, 3],
-        [4, 0, 0, 8, 0, 3, 0, 0, 1],
-        [7, 0, 0, 0, 2, 0, 0, 0, 6],
-        [0, 6, 0, 0, 0, 0, 2, 8, 0],
-        [0, 0, 0, 4, 1, 9, 0, 0, 5],
-        [0, 0, 0, 0, 8, 0, 0, 7, 9]
-    ];
+    const oriBoard = [[0, 0, 0, 0, 0, 0, 0, 1, 2],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 3, 5, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 7, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        [9, 8, 0, 0, 0, 0, 0, 0, 0]];
     
+    let board = [[0, 0, 0, 0, 0, 0, 0, 1, 2],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 3, 5, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 7, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [9, 8, 0, 0, 0, 0, 0, 0, 0]];
+
     //initialise
-    const boardElement = document.getElementById('container'); 
-    const reset = document.getElementById('reset'); 
+    const boardElement = document.getElementById('container');
+    const reset = document.getElementById('reset');
     const mistakesPH = document.getElementById('mistakes-counter');
     const solve = document.getElementById('solve-btn');
-    let mistakes = 0; 
+    let mistakes = 0;
 
     //solver
     const solveSudoku = (row, cell) => {
@@ -43,7 +51,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
     //functions
     const createBoard = () => {
-       for (let row = 0; row < board.length; row++) {            
+       for (let row = 0; row < board.length; row++) {
             for (let cell = 0; cell < board[row].length; cell++) {
                 const cellDiv = document.createElement('div');
                 cellDiv.classList.add('cell-div');
@@ -63,18 +71,18 @@ document.addEventListener('DOMContentLoaded', (e) => {
                         if(sudokuRules(row, cell) === false){
                             e.target.value = '';
                             mistakes++;
-                            mistakesPH.innerHTML = `Mistakes: ${mistakes}`;
+                            mistakesPH.innerText = `Mistakes: ${mistakes}`;
                         }
                     });
-                    cellDiv.appendChild(cellInput);                    
+                    cellDiv.appendChild(cellInput);
                 }
                 boardElement.appendChild(cellDiv);
-            }        
+            }
        }
-    }        
+    }
 
     const updateBoardData = (row, cell, value) => {
-        board[row][cell] = parseInt(value);        
+        board[row][cell] = parseInt(value);
     }
 
     const sudokuRules = (row, cell) => {
@@ -112,25 +120,25 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
         return true;
     }
-    
-    
+
+
     //call
     createBoard();
 
     //reset button
-    // reset.addEventListener('click', (e) => {
-    //     boardElement.textContent = "";
-    //     mistakes = 0;        
-    //     mistakesPH.textContent = `Mistakes: `;
-    //     createBoard();
-    // });
-    //next time...
+    reset.addEventListener('click', (e) => {        
+        board = oriBoard;        
+        boardElement.textContent = ' ';
+        mistakes = 0;
+        mistakesPH.textContent = `Mistakes: 0`;
+        createBoard();
+    });
 
     //solve button
     solve.addEventListener('click', () => {
-        solveSudoku(0, 0); 
+        solveSudoku(0, 0);
         boardElement.textContent = '';
-        createBoard();        
+        createBoard();
     });
-    
+
 });
